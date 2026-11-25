@@ -1,0 +1,20 @@
+Fireworks Sky – sound credits
+=============================
+
+All sound effects are synthesized in the browser with the Web Audio API:
+
+  - launch whoosh (filtered noise sweep + rising tone)
+  - burst boom (soft low sine + low-passed noise)
+  - burst pop (shorter, higher thud)
+  - glitter crackle (a handful of quiet high-pass clicks)
+  - sparkler fizz (soft high-pass noise while swiping)
+  - moon giggle (short rising sine / triangle notes)
+
+Background music is also generated in the game: a gentle C-major arpeggio
+and pad at 100 BPM. Firework bursts are loosely nudged onto the beat when
+they would land close to one.
+
+No third-party recordings are used, so no attribution is required.
+The same note appears in the game under the “ⓘ sounds” button.
+
+Volumes are kept deliberately soft and child-friendly.

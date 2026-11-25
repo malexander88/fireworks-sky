@@ -1,0 +1,59 @@
+<!DOCTYPE html><html><body style="margin:0;background:transparent"><canvas id="x"></canvas>
+<script>
+const TAU = Math.PI * 2;
+function render(size, withBg, pad) {
+  const cv = document.getElementById('x'); cv.width = cv.height = size;
+  const g = cv.getContext('2d');
+  g.clearRect(0, 0, size, size);
+  if (withBg) {
+    g.save();
+    g.beginPath(); g.roundRect(0, 0, size, size, size * 0.22); g.clip();
+    const sk = g.createLinearGradient(0, 0, 0, size);
+    sk.addColorStop(0, '#07061a');
+    sk.addColorStop(0.55, '#1c1348');
+    sk.addColorStop(1, '#2a1860');
+    g.fillStyle = sk; g.fillRect(0, 0, size, size);
+    g.restore();
+  }
+  const cx = size / 2, cy = size / 2;
+  // tiny stars (only when we have a background, or faintly on foreground)
+  g.fillStyle = withBg ? '#fff8e8' : 'rgba(255,248,232,.7)';
+  const stars = [[0.16,0.18,0.012],[0.28,0.12,0.008],[0.72,0.14,0.01],[0.86,0.22,0.009],[0.2,0.78,0.01],[0.84,0.8,0.008]];
+  for (const [x,y,r] of stars) {
+    if (!withBg && (x < pad || x > 1-pad || y < pad || y > 1-pad)) continue;
+    g.beginPath(); g.arc(size*x, size*y, size*r, 0, TAU); g.fill();
+  }
+  // moon, slightly upper-left
+  const mx = size * (withBg ? 0.36 : 0.34), my = size * 0.36, r = size * (withBg ? 0.22 : 0.26);
+  const glow = g.createRadialGradient(mx, my, r*0.4, mx, my, r*1.8);
+  glow.addColorStop(0, 'rgba(255,236,170,.5)');
+  glow.addColorStop(1, 'rgba(255,220,140,0)');
+  g.fillStyle = glow; g.beginPath(); g.arc(mx, my, r*1.8, 0, TAU); g.fill();
+  const body = g.createRadialGradient(mx - r*0.25, my - r*0.3, r*0.1, mx, my, r);
+  body.addColorStop(0, '#fff6c8'); body.addColorStop(0.6, '#ffe58a'); body.addColorStop(1, '#f0c45a');
+  g.fillStyle = body; g.beginPath(); g.arc(mx, my, r, 0, TAU); g.fill();
+  g.fillStyle = 'rgba(255,154,162,.5)';
+  g.beginPath(); g.ellipse(mx - r*0.42, my + r*0.22, r*0.16, r*0.12, 0, 0, TAU); g.fill();
+  g.beginPath(); g.ellipse(mx + r*0.42, my + r*0.22, r*0.16, r*0.12, 0, 0, TAU); g.fill();
+  g.strokeStyle = '#3a2040'; g.lineWidth = Math.max(2, r*0.07); g.lineCap = 'round';
+  g.beginPath(); g.moveTo(mx - r*0.38, my - r*0.02); g.quadraticCurveTo(mx - r*0.28, my + r*0.06, mx - r*0.16, my - r*0.02); g.stroke();
+  g.beginPath(); g.moveTo(mx + r*0.16, my - r*0.02); g.quadraticCurveTo(mx + r*0.28, my + r*0.06, mx + r*0.38, my - r*0.02); g.stroke();
+  g.beginPath(); g.arc(mx, my + r*0.12, r*0.28, 0.25, Math.PI - 0.25); g.stroke();
+  // firework burst, lower-right
+  const fx = size * (withBg ? 0.68 : 0.66), fy = size * 0.66;
+  const cols = ['#ff4d88','#ffd166','#1ec8ff','#b44dff','#fff'];
+  const n = 22;
+  g.save(); g.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * TAU, sp = r * (0.55 + (i % 3) * 0.18);
+    const x = fx + Math.cos(a) * sp, y = fy + Math.sin(a) * sp;
+    const col = cols[i % cols.length];
+    const rad = r * 0.16;
+    const rg = g.createRadialGradient(x, y, 0, x, y, rad);
+    rg.addColorStop(0, '#fff'); rg.addColorStop(0.35, col); rg.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = rg; g.beginPath(); g.arc(x, y, rad, 0, TAU); g.fill();
+  }
+  g.restore();
+  return cv.toDataURL('image/png');
+}
+</script></body></html>
